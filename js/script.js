@@ -80,22 +80,31 @@ function displayEmployees(data) {
   let employeeTable = document.getElementById('employeeTable');
   employeeTable.innerHTML = '';
   data.forEach(employee => {
-    employeeTable.innerHTML += `
-            <tr>
-                <td>${employee.Eid}</td>
-                <td>${employee.Name}</td>
-                <td>${employee.Position}</td>
-                <td>${employee.Salary}</td>
-                <td>${employee.Age}</td>
-                <td>${employee.Address}</td>
-                <td>${employee.DeptCode}</td>
-                <td>${employee.DeptDescription}</td>
-                <td>${employee.TotalLoanAmount}</td>
-                <td>
-                   <button class="btn btn-primary btn-sm" onclick="openLoanModal(${employee.Eid})">Apply Loan</button>
-                   <button class="btn btn-danger btn-sm delete-btn" data-eid="${employee.Eid}">Delete</button>
-                </td>
-            </tr>`;
+    let row = document.createElement('tr');
+    row.innerHTML = `
+        <td>${employee.Eid}</td>
+        <td>${employee.Name}</td>
+        <td>${employee.Position}</td>
+        <td>${employee.Salary}</td>
+        <td>${employee.Age}</td>
+        <td>${employee.Address}</td>
+        <td>${employee.DeptCode}</td>
+        <td>${employee.DeptDescription}</td>
+        <td>${employee.TotalLoanAmount}</td>
+        <td>
+           <button class="btn btn-primary btn-sm" onclick="openLoanModal(${employee.Eid})">Apply Loan</button>
+           <button class="btn btn-danger btn-sm delete-btn" data-eid="${employee.Eid}">Delete</button>
+        </td>
+    `;
+    employeeTable.appendChild(row);
+  });
+
+  // Event delegation for delete buttons
+  employeeTable.addEventListener('click', function(event) {
+    if (event.target.classList.contains('delete-btn')) {
+      let Eid = event.target.getAttribute('data-eid');
+      deleteEmployee(Eid);
+    }
   });
 }
 
