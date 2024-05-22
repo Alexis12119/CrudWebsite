@@ -1,5 +1,4 @@
 let isEditMode = false; // Variable to track whether the modal is in edit mode
-
 document.getElementById('createEmployeeBtn').addEventListener('click', function () {
   isEditMode = false; // Set mode to create when creating a new employee
   resetEmployeeForm(); // Reset form fields
@@ -114,14 +113,13 @@ function displayEmployees(data) {
         </td>
     `;
     employeeTable.appendChild(row);
-  });
 
-  // Event delegation for delete buttons
-  employeeTable.addEventListener('click', function (event) {
-    if (event.target.classList.contains('delete-btn')) {
-      let Eid = event.target.getAttribute('data-eid');
+    // Attach event listener directly to each delete button
+    let deleteButton = row.querySelector('.delete-btn');
+    deleteButton.addEventListener('click', function () {
+      let Eid = this.getAttribute('data-eid');
       deleteEmployee(Eid);
-    }
+    });
   });
   // Add event listeners for edit buttons
   document.querySelectorAll('.edit-btn').forEach(button => {
@@ -236,7 +234,7 @@ function editEmployee(Eid) {
       document.getElementById('employeeAge').value = data.Age;
       document.getElementById('employeeAddress').value = data.Address;
       document.getElementById('employeeDeptCode').value = data.DeptCode;
-      document.getElementById('employeeEid').value = Eid; // Set the Eid of the employee being edited
+      document.getElementById('employeeEid').value = Eid;
 
       isEditMode = true;
 
