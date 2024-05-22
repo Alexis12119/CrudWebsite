@@ -107,8 +107,8 @@ function displayEmployees(data) {
         <td>${employee.DeptDescription}</td>
         <td>${employee.TotalLoanAmount}</td>
         <td>
-           <button class="btn btn-primary btn-sm" onclick="openLoanModal(${employee.Eid})">Apply Loan</button>
-           <button class="btn btn-primary btn-sm edit-btn" data-eid="${employee.Eid}">Edit</button>
+           <button class="btn btn-primary btn-sm" onclick="openLoanModal(${employee.Eid})">Apply Loan</button></br>
+           <button class="btn btn-block btn-sm edit-btn" data-eid="${employee.Eid}">Edit</button></br>
            <button class="btn btn-danger btn-sm delete-btn" data-eid="${employee.Eid}">Delete</button>
         </td>
     `;
@@ -237,7 +237,8 @@ function editEmployee(Eid) {
       document.getElementById('employeeEid').value = Eid;
 
       isEditMode = true;
-
+      // Update modal title to indicate editing
+      document.getElementById('employeeModalLabel').textContent = 'Edit Employee';
       // Show the employee modal form
       $('#employeeModal').modal('show');
     })
