@@ -1,4 +1,3 @@
-
 <?php
 include 'db.php';
 
@@ -15,9 +14,10 @@ if (!empty($data->Eid)) {
     $Address = $data->Address;
     $DeptCode = $data->DeptCode;
 
-    $sql = "UPDATE EmployeeInfo SET Name='$Name', Position='$Position', Salary='$Salary', Age='$Age', Address='$Address', DeptCode='$DeptCode' WHERE Eid=$Eid";
+    $sql = $conn->prepare("UPDATE EmployeeInfo SET Name=?, Position=?, Salary=?, Age=?, Address=?, DeptCode=? WHERE Eid=?");
+    $sql->bind_param("ssiissi", $Name, $Position, $Salary, $Age, $Address, $DeptCode, $Eid);
 
-    if ($conn->query($sql) === TRUE) {
+    if ($sql->execute() === TRUE) {
         echo json_encode(array("message" => "Employee updated successfully"));
     } else {
         echo json_encode(array("error" => "Error updating employee: " . $conn->error));
@@ -31,12 +31,25 @@ if (!empty($data->Eid)) {
     $Address = $data->Address;
     $DeptCode = $data->DeptCode;
 
-    $sql = "INSERT INTO EmployeeInfo (Name, Position, Salary, Age, Address, DeptCode) VALUES ('$Name', '$Position', '$Salary', '$Age', '$Address', '$DeptCode')";
+    // Check if the name already exists using prepared statements
+    $checkSql = $conn->prepare("SELECT * FROM EmployeeInfo WHERE Name = ?");
+    $checkSql->bind_param("s", $Name);
+    $checkSql->execute();
+    $result = $checkSql->get_result();
 
-    if ($conn->query($sql) === TRUE) {
-        echo json_encode(array("message" => "New employee created successfully"));
+    if ($result->num_rows > 0) {
+        // Name already exists
+        echo json_encode(array("error" => "Employee with this name already exists"));
     } else {
-        echo json_encode(array("error" => "Error creating employee: " . $conn->error));
+        // Prepare SQL statement for insertion using prepared statements
+        $insertSql = $conn->prepare("INSERT INTO EmployeeInfo (Name, Position, Salary, Age, Address, DeptCode) VALUES (?, ?, ?, ?, ?, ?)");
+        $insertSql->bind_param("sssiis", $Name, $Position, $Salary, $Age, $Address, $DeptCode);
+
+        if ($insertSql->execute() === TRUE) {
+            echo json_encode(array("message" => "New employee created successfully"));
+        } else {
+            echo json_encode(array("error" => "Error creating employee: " . $conn->error));
+        }
     }
 }
 

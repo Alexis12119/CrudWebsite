@@ -83,12 +83,13 @@ document.addEventListener('DOMContentLoaded', function () {
 let employees = [];
 
 function fetchEmployees() {
-  fetch('EmployeeLoanView.php')
+  fetch('fetchEmployees.php')
     .then(response => response.json())
     .then(data => {
       employees = data;
       displayEmployees(data);
-    });
+    })
+    .catch(error => console.error('Error fetching employees:', error));
 }
 
 function displayEmployees(data) {
@@ -236,8 +237,8 @@ function editEmployee(Eid) {
       document.getElementById('employeeDeptCode').value = data.DeptCode;
       document.getElementById('employeeEid').value = Eid;
 
-      isEditMode = true;
-      // Update modal title to indicate editing
+       isEditMode = true;
+     // Update modal title to indicate editing
       document.getElementById('employeeModalLabel').textContent = 'Edit Employee';
       // Show the employee modal form
       $('#employeeModal').modal('show');
